@@ -1,0 +1,12 @@
+{
+  "srcDir": ".",
+  "filesGlobPattern": "**/*.{ts,tsx}",
+  "singletonsPattern": ["(Store|Service)$"],
+  "autowiredPattern": ["(Store|Service|UseCase)$"],
+  "depsPattern": ["Deps$"],
+  "providerPattern": ["Provider$"],
+  "mainClass": "AppMain",
+  "mainFilename": "main.ts",
+  "providers": [],
+  "bootstrap": "main.start();"
+}

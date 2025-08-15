@@ -1,0 +1,27 @@
+{
+    "name": "@runboot/react",
+    "version": "0.0.1",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "type": "module",
+    "sideEffects": false,
+    "files": [
+        "/lib"
+    ],
+    "dependencies": {
+        "@runboot/di": "0.0.1"
+    },
+    "devDependencies": {
+        "@types/react": "19.0.8",
+        "react": "19.0.0"
+    },
+    "peerDependencies": {
+        "react": "19.0.0"
+    },
+    "scripts": {
+        "compile": "tsc --jsx",
+        "ts": "tsc  --noEmit",
+        "test": "echo \"Warning: no test specified\""
+    }
+}

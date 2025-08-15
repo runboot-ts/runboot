@@ -1,0 +1,21 @@
+{
+    "name": "@runboot/di",
+    "version": "0.0.1",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "type": "module",
+    "sideEffects": false,
+    "files": [
+        "/lib"
+    ],
+    "dependencies": {
+    },
+    "scripts": {
+        "compile": "tsc --jsx",
+        "test": "echo \"Warning: no test specified\""
+    },
+    "browserslist": [
+        "last 2 Chrome versions"
+    ]
+}

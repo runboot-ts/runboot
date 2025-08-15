@@ -1,0 +1,25 @@
+{
+  "name": "runboot",
+  "version": "0.0.1",
+  "private": true,
+  "description": "",
+  "scripts": {
+    "clean": "rimraf -g \"build/**\" \"packages/**/lib\" \"packages/**/*.tsbuildinfo\"",
+    "compile": "tsc -b tsconfig.build.json",
+    "prettier": "prettier \"*.{js,json,yml,md}\" \"packages/**/*\"",
+    "format": "npm run prettier -- --write",
+    "format:check": "npm run prettier -- --check",
+    "lint": "npm run format:check"
+
+  },
+  "author": "",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "prettier": "3.2.5",
+    "rimraf": "5.0.5",
+    "typescript": "5.7.3"
+  }
+}

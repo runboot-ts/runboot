@@ -1,0 +1,16 @@
+{
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        "composite": true,
+        "rootDir": "src",
+        "outDir": "lib",
+        "lib": ["es5", "es6", "es7", "es2017", "dom"],
+        "jsx": "react-jsx",
+        "jsxImportSource": "react",
+        "module": "esnext",
+        "target": "esnext",
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true
+    },
+    "references": []
+}

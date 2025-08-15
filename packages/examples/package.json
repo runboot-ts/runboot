@@ -1,0 +1,25 @@
+{
+    "name": "examples",
+    "version": "0.0.1",
+    "license": "MIT",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "type": "module",
+    "sideEffects": false,
+    "files": [
+        "/lib"
+    ],
+    "dependencies": {
+        "@runboot/cli": "0.0.1",
+        "@runboot/di": "0.0.1",
+        "@runboot/react": "0.0.1",
+        "tsx": "4.20.4"
+    },
+    "scripts": {
+        "compile": "tsc --jsx",
+        "ts": "tsc  --noEmit",
+        "test": "echo \"Warning: no test specified\"",
+        "ex1": "runboot build ./example-1/.runbootrc.json -e prod && tsx ./example-1/main.ts",
+        "ex1:dev": "runboot build ./example-1/.runbootrc.json -e dev && tsx ./example-1/main.ts"
+    }
+}

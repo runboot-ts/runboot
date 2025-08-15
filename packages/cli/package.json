@@ -1,0 +1,22 @@
+{
+    "name": "@runboot/cli",
+    "version": "0.0.1",
+    "description": "",
+    "main": "lib/main.js",
+    "bin": {
+        "runboot": "bin/cli.js"
+    },
+    "scripts": {},
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "dependencies": {
+        "@oxc-project/types": "0.76.0",
+        "commander": "12.0.0",
+        "glob": "11.0.3",
+        "oxc-parser": "0.76.0"
+    },
+    "devDependencies": {
+        "@types/node": "20.11.25"
+    }
+}
