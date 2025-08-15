@@ -2,7 +2,7 @@
   "srcDir": ".",
   "filesGlobPattern": "**/*.{ts,tsx}",
   "singletonsPattern": ["(Store|Service)$"],
-  "autowiredPattern": ["(Store|Service|UseCase)$"],
+  "autowiredPattern": ["(Store|Service|UseCase|ServiceDev)$"],
   "depsPattern": ["Deps$"],
   "providerPattern": ["Provider$"],
   "mainClass": "AppMain",

@@ -1,5 +1,5 @@
 import { DIBuilder } from "../DIBuilder";
-import { BuildConfig, IDeps } from "../types";
+import { BuildConfig, IDeps, IFabric } from "../types";
 import { Renderer } from "./Renderer";
 
 export class DIRenderer extends Renderer {
@@ -15,8 +15,7 @@ export class DIRenderer extends Renderer {
     public render() {
         const result: string[] = [];
         result.push(this.renderImports());
-        result.push(this.renderProviders());
-        result.push(this.wrapFabrics(this.renderFabrics()));
+        result.push(this.wrapFabrics([this.renderProviders(), this.renderFabrics()].join("\n\n")));
         result.push(this.renderBootstrap());
         return result.join("\n\n");
     }
@@ -38,20 +37,23 @@ export class DIRenderer extends Renderer {
         const result: string[] = [];
 
         this.builder.forEachProvider(provider => {
-            const leader = `class ${provider.implClassName} extends ${provider.name} {\n`;
+            const leader = `${this.indent(1)}class ${provider.implClassName} extends ${provider.name} {\n`;
             let body = "";
-            const trailer = "}";
+            const trailer = `${this.indent(1)}}`;
             const properties: string[] = [];
 
             provider.fabrics.forEach(key => {
                 const params = this.builder.getProviderFabricParamsByKey(key);
                 if (params.isAbstract && params.implTypeName) {
-                    const property = `${this.indent(1)}${params.propertyName}() {\n${this.indent(2)}return new ${params.implTypeName}();\n${this.indent(1)}}`;
+                    const fabric = this.builder.getFabricByKey(params.implTypeName);
+
+                    const resolve = fabric ? `resolve(${fabric.getKey()})` : `new ${params.implTypeName}()`;
+                    const property = `${this.indent(2)}${params.propertyName}() {\n${this.indent(3)}return ${resolve};\n${this.indent(2)}}`;
                     properties.push(property);
                 }
             });
             body += properties.join("\n") + "\n";
-            const instance = `const ${provider.varName} = new ${provider.implClassName}();\n`;
+            const instance = `${this.indent(1)}const ${provider.varName} = new ${provider.implClassName}();\n`;
             result.push(`${leader}${body}${trailer}\n${instance}`);
         });
 
@@ -61,44 +63,51 @@ export class DIRenderer extends Renderer {
     private renderFabrics(): string {
         const result: string[] = [];
         this.builder.forEachFabric(fabric => {
-            const params = fabric.getParams();
-            const deps = fabric.getDeps();
-            let depsVarName = "";
-            if (deps) {
-                const depsResult = this.renderDeps(deps);
-                result.push(depsResult.text);
-                depsVarName = depsResult.varName;
-            }
-
-            switch (params.type) {
-                case "Autowired":
-                    const isSingleton = this.builder.isSingleton(params.className) ? "true" : "false";
-                    result.push(
-                        `${this.indent(1)}register(${params.className}, () => new ${params.className}(${depsVarName ? `${depsVarName}` : ""}), ${isSingleton});\n`,
-                    );
-                    return;
-                case "Component": {
-                    if (!depsVarName) {
-                        throw new Error(`Invalid component ${params.className} - variable name not defined`);
-                    }
-                    result.push(`${this.indent(1)}register(${params.className}, () => ${depsVarName});\n`);
-                    return;
-                }
-                case "Provider": {
-                    const provider = this.builder.getProviderByFabricKey(fabric.getKey());
-                    const type = this.builder.getTypeByKey(fabric.getKey());
-                    const typeName = type.getName();
-                    const isSingleton = this.builder.isSingleton(typeName) ? "true" : "false";
-                    result.push(
-                        `${this.indent(1)}register(${typeName}, () => ${provider.varName}.${params.propertyName}(${depsVarName}), ${isSingleton});\n`,
-                    );
-                    return;
-                }
-            }
+            result.push(...this.renderFabric(fabric));
         });
 
         result.push(`${this.indent(1)}register(DIContainer, () => ({ register, resolve }), true);`);
         return result.join("\n");
+    }
+
+    private renderFabric(fabric: IFabric): string[] {
+        const result: string[] = [];
+        const params = fabric.getParams();
+        const deps = fabric.getDeps();
+        let depsVarName = "";
+        if (deps) {
+            const depsResult = this.renderDeps(deps);
+            result.push(depsResult.text);
+            depsVarName = depsResult.varName;
+        }
+
+        switch (params.type) {
+            case "Autowired":
+                const isSingleton = this.builder.isSingleton(params.className) ? "true" : "false";
+                result.push(
+                    `${this.indent(1)}register(${params.className}, () => new ${params.className}(${depsVarName ? `${depsVarName}` : ""}), ${isSingleton});\n`,
+                );
+                break;
+            case "Component": {
+                if (!depsVarName) {
+                    throw new Error(`Invalid component ${params.className} - variable name not defined`);
+                }
+                result.push(`${this.indent(1)}register(${params.className}, () => ${depsVarName});\n`);
+                break;
+            }
+            case "Provider": {
+                const provider = this.builder.getProviderByFabricKey(fabric.getKey());
+                const type = this.builder.getTypeByKey(fabric.getKey());
+                const typeName = type.getName();
+                const isSingleton = this.builder.isSingleton(typeName) ? "true" : "false";
+                result.push(
+                    `${this.indent(1)}register(${typeName}, () => ${provider.varName}.${params.propertyName}(${depsVarName}), ${isSingleton});\n`,
+                );
+                break;
+            }
+        }
+
+        return result;
     }
 
     private renderDeps(deps: IDeps) {

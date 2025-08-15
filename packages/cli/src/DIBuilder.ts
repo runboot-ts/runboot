@@ -1,5 +1,5 @@
 import { FileBody } from "./FileBody";
-import { BuildConfig, FabricProviderParams, IFabric, ProviderStoreItem } from "./types";
+import { BuildConfig, FabricProviderParams, IFabric, ITypeItem, ProviderStoreItem } from "./types";
 import { AutowiredFabric } from "./fabrics/AutowiredFabric";
 import { TypeStore } from "./stores/TypeStore";
 import { ProviderFabric } from "./fabrics/ProviderFabric";
@@ -103,8 +103,25 @@ export class DIBuilder {
         return this.fabricStore.getByKey(key).getParams() as FabricProviderParams;
     }
 
-    public getTypeByKey(key: string) {
+    public getFabricByKey(key: string): IFabric | null {
+        try {
+            return this.fabricStore.getByKey(key);
+        } catch {
+            return null;
+        }
+    }
+
+    public getTypeByKey(key: string): ITypeItem {
         return this.typeStore.getByKey(key);
+    }
+
+    public isTypeExist(key: string) {
+        try {
+            this.typeStore.getByKey(key);
+            return true;
+        } catch {
+            return false;
+        }
     }
 
     public getProviderByFabricKey(key: string) {
