@@ -18,20 +18,11 @@ export const configure = ({ register, resolve }: DIContainer) => {
   const appProviderDevImpl = new AppProviderDevImpl();
 
 
-  const getDataServiceDeps1 = {
-    get logger() {
-      return resolve(LoggerService);
-    },
-    get httpClient() {
-      return resolve(HttpClientService);
-    },
-  };
-
-  register(GetDataService, () => new GetDataService(getDataServiceDeps1), true);
+  register(AppStore, () => new AppStore(), true);
 
   register(LoggerService, () => appProviderDevImpl.provideLogger(), true);
 
-  const doSomethingUseCaseDeps2 = {
+  const doSomethingUseCaseDeps1 = {
     get dataService() {
       return resolve(GetDataService);
     },
@@ -43,7 +34,18 @@ export const configure = ({ register, resolve }: DIContainer) => {
     },
   };
 
-  register(DoSomethingUseCase, () => new DoSomethingUseCase(doSomethingUseCaseDeps2), false);
+  register(DoSomethingUseCase, () => new DoSomethingUseCase(doSomethingUseCaseDeps1), false);
+
+  const getDataServiceDeps2 = {
+    get logger() {
+      return resolve(LoggerService);
+    },
+    get httpClient() {
+      return resolve(HttpClientService);
+    },
+  };
+
+  register(GetDataService, () => new GetDataService(getDataServiceDeps2), true);
 
   const mainAppDeps3 = {
     get doSomethingUseCase() {
@@ -59,23 +61,21 @@ export const configure = ({ register, resolve }: DIContainer) => {
 
   register(AppMain, () => new AppMain(mainAppDeps3), false);
 
-  register(AppStore, () => new AppStore(), true);
-
-  const loggerServiceDevDeps4 = {
-    get container() {
-      return resolve(DIContainer);
-    },
-  };
-
-  register(LoggerServiceDev, () => new LoggerServiceDev(loggerServiceDevDeps4), false);
-
-  const httpClientServiceDeps5 = {
+  const httpClientServiceDeps4 = {
     get logger() {
       return resolve(LoggerService);
     },
   };
 
-  register(HttpClientService, () => new HttpClientService(httpClientServiceDeps5), true);
+  register(HttpClientService, () => new HttpClientService(httpClientServiceDeps4), true);
+
+  const loggerServiceDevDeps5 = {
+    get container() {
+      return resolve(DIContainer);
+    },
+  };
+
+  register(LoggerServiceDev, () => new LoggerServiceDev(loggerServiceDevDeps5), false);
 
   register(DIContainer, () => ({ register, resolve }), true);
 };

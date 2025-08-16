@@ -27,8 +27,7 @@ export const createDIContainer = (configure?: DIContainerConfigure): DIContainer
 
         const fabric = store.get(key);
         if (!fabric) {
-            console.error("Fabric not exist", key, store);
-            throw new Error("Fabric not exist");
+            throw new Error(`Fabric not exist - ${key}`);
         }
         return fabric();
     };

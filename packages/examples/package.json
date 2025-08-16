@@ -10,7 +10,7 @@
         "/lib"
     ],
     "dependencies": {
-        "@runboot/cli": "0.0.1",
+        "@runboot/cli": "0.0.4",
         "@runboot/di": "0.0.1",
         "@runboot/react": "0.0.1",
         "tsx": "4.20.4"
